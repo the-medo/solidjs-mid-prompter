@@ -1,11 +1,11 @@
 import { Component, JSX } from 'solid-js';
 
-interface TagButtonProps {
+interface TagButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   isActive?: boolean;
   children?: JSX.Element | JSX.Element[];
 }
 
-const TagButton: Component<TagButtonProps> = ({ isActive = false, children }) => {
+const TagButton: Component<TagButtonProps> = ({ isActive = false, children, ...props }) => {
   const activeClasses = 'bg-dark-purple text-white';
   const inactiveClasses = 'bg-white border-1 border-dark-purple text-dark-purple opacity-50';
 
@@ -13,7 +13,7 @@ const TagButton: Component<TagButtonProps> = ({ isActive = false, children }) =>
 
   const classes = `${baseClasses} ${isActive ? activeClasses : inactiveClasses}`;
 
-  return <button class={classes}>{children}</button>;
+  return <button class={classes} {...props}>{children}</button>;
   // return <button class={''}>{children}</button>;
 };
 

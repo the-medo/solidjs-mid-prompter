@@ -15,6 +15,7 @@ const LeftBar: ParentComponent = ({ children }) => {
       <SectionTemplate />
       <SectionStyles />
       <SectionRatios />
+
       <Button>
         <h2 class="text-3xl">Run</h2>
       </Button>

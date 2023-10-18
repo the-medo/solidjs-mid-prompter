@@ -1,12 +1,15 @@
-import { Component, JSX } from 'solid-js';
+import { Component, For, JSX } from 'solid-js';
 import Section from './Section';
 import TagButton from '../../../common/TagButton/TagButton';
+import { useAppState } from '../../../../store/store';
+
+const { appState, setAppState } = useAppState();
 
 const tagButtons = [
-  "(image we're prompting)",
-  '(5 descriptive keywords)',
   '(art medium)',
   '(artistic style)',
+  "(image we're prompting)",
+  '(5 descriptive keywords)',
   '(color palette)',
   '(lighting conditions)',
   '(perspective/viewpoint)',
@@ -20,9 +23,19 @@ const tagButtons = [
 const SectionTemplate: Component = () => {
   return (
     <Section title={'Template'}>
-      {tagButtons.map((i) => (
-        <TagButton isActive={false}>{i}</TagButton>
-      ))}
+      <For each={appState.templateOptions}>
+        {(tplOption) => (
+          <TagButton
+            onClick={() => {
+              console.log('Wanna edit: ', 'template', tplOption, true);
+              setAppState('template', tplOption, true);
+            }}
+            isActive={appState.template[tplOption]}
+          >
+            ({tplOption})
+          </TagButton>
+        )}
+      </For>
     </Section>
   );
 };
