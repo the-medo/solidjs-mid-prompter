@@ -16,7 +16,6 @@ const OptionsStateContext = createContext<OptionsStateContextValues>();
 const ContextOptionsProvider: ParentComponent = (props) => {
   const [store, setStore] = createStore(initialState());
 
-
   return (
     <OptionsStateContext.Provider value={store}>
       {props.children}

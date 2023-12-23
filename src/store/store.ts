@@ -1,6 +1,12 @@
 import { createStore } from 'solid-js/store';
 
 
+export enum AI {
+  OPEN_AI,
+  MISTRAL,
+  BARD,
+}
+
 export enum BSection {
   TEMPLATE,
   MEDIUM,
@@ -40,6 +46,7 @@ const stringsToOptions = (s: string[]): Options => s.reduce((a, b) => {
 type AppState = {
   prompt: string;
   options: Record<BSection, Options>;
+  ai: AI,
 };
 
 const [appState, setAppState] = createStore<AppState>({
@@ -49,6 +56,7 @@ const [appState, setAppState] = createStore<AppState>({
     [BSection.MEDIUM]: stringsToOptions(optionTitles[BSection.MEDIUM]),
     [BSection.RATIO]: stringsToOptions(optionTitles[BSection.RATIO]),
   },
+  ai: AI.MISTRAL,
 });
 
 export const useAppState = () => ({ appState, setAppState });
