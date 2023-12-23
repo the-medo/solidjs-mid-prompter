@@ -1,7 +1,7 @@
 import { Component, JSX } from 'solid-js';
 import Section from './Section';
 
-const SectionPrompt: Component = () => {
+const PromptSection: Component = () => {
   return (
     <Section title={'Prompt'}>
       <textarea class="w-full rounded-lg opacity-70" />
@@ -9,4 +9,4 @@ const SectionPrompt: Component = () => {
   );
 };
 
-export default SectionPrompt;
+export default PromptSection;

@@ -1,15 +1,20 @@
 import { createStore } from 'solid-js/store';
 
-type AppState = {
-  prompt: string;
-  templateOptions: string[];
-  template: Record<string, boolean | undefined>;
-  options: Record<string, string[] | undefined>;
+
+export enum BSection {
+  TEMPLATE,
+  MEDIUM,
+  RATIO,
+}
+
+export const sectionTitles: Record<BSection, string> = {
+  [BSection.TEMPLATE]: "Template",
+  [BSection.MEDIUM]: "Medium",
+  [BSection.RATIO]: "Ratio",
 };
 
-const [appState, setAppState] = createStore<AppState>({
-  prompt: '',
-  templateOptions: [
+const optionTitles: Record<BSection, string[]> = {
+  [BSection.TEMPLATE]: [
     'medium',
     'style',
     'prompting',
@@ -20,17 +25,30 @@ const [appState, setAppState] = createStore<AppState>({
     'time of day',
     'ratio',
   ],
-  template: {},
-  options: {
-    medium: ['digital art', 'concept art', 'watercolor painting'],
-    ratio: ['1:1', '3:2', '2:3', '16:9', '5:1'],
-  },
-});
-
-function setTemplateOption(option: string, value: boolean) {
-  setAppState('template', option, value);
+  [BSection.MEDIUM]: ['digital art', 'concept art', 'watercolor painting'],
+  [BSection.RATIO]: ['1:1', '3:2', '2:3', '16:9', '5:1']
 }
 
-setAppState('template', 'medium', true);
+export type Options = Record<string, boolean | undefined>
+
+const stringsToOptions = (s: string[]): Options => s.reduce((a, b) => {
+  a[b] = false;
+  return a;
+}, {} as Options);
+
+
+type AppState = {
+  prompt: string;
+  options: Record<BSection, Options>;
+};
+
+const [appState, setAppState] = createStore<AppState>({
+  prompt: '',
+  options: {
+    [BSection.TEMPLATE]: stringsToOptions(optionTitles[BSection.TEMPLATE]),
+    [BSection.MEDIUM]: stringsToOptions(optionTitles[BSection.MEDIUM]),
+    [BSection.RATIO]: stringsToOptions(optionTitles[BSection.RATIO]),
+  },
+});
 
 export const useAppState = () => ({ appState, setAppState });
