@@ -1,28 +1,32 @@
-import {JSX, ParentComponent} from 'solid-js';
+import {JSX, mergeProps, ParentComponent} from 'solid-js';
 
 
 interface ButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement>  {
-  color: 'red' | 'dark-purple'
-  width: 'full' | 'icon'
+  clr: () => 'red' | 'dark-purple',
+  dsb?: () => boolean,
+  w: 'full' | 'icon',
 }
 
-const BUTTON_COLORS: Record<ButtonProps['color'], string> = {
-  red: 'bg-red-600',
-  ['dark-purple']: 'bg-dark-purple',
-};
-
-const BUTTON_WIDTH: Record<ButtonProps['width'], string> = {
-  full: 'w-full',
-  icon: 'w-12',
-};
-
-
-const Button: ParentComponent<ButtonProps> = ({ children, color = "dark-purple", width="full", ...props }) => {
-
-  const variantClassList = `${BUTTON_COLORS[color]} ${BUTTON_WIDTH[width]} `
+const Button: ParentComponent<ButtonProps> = ({ children, ...initialProps }) => {
+  let props = mergeProps({
+    clr: () => "dark-purple",
+    w: "full",
+  }, initialProps)
 
   return (
-    <button class={`${variantClassList} text-white p-2 px-4 rounded-md opacity-100`} {...props}>{children}</button>
+    <button
+      class={`text-white p-2 px-4 rounded-md opacity-100 disabled:opacity-50 disabled:cursor-not-allowed`}
+      classList={{
+        "bg-red-600": props.clr() === "red",
+        "bg-dark-purple": props.clr() === "dark-purple",
+        "w-full": props.w === "full",
+        "w-12": props.w === "icon",
+      }}
+      {...props}
+      disabled={props.dsb?.() ?? false}
+    >
+      {children}
+    </button>
   );
 };
 

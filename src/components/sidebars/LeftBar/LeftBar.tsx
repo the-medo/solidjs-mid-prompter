@@ -1,4 +1,4 @@
-import {createSignal, ParentComponent} from 'solid-js';
+import {createEffect, createMemo, createSignal, ParentComponent} from 'solid-js';
 import styles from './LeftBar.module.css';
 import Button from '../../common/Button/Button';
 import ButtonSection from './Sections/ButtonSection';
@@ -7,6 +7,7 @@ import {AI, BSection} from "../../../store/store";
 import {ImKey} from "solid-icons/im";
 import Section from "./Sections/Section";
 import {ApiKeys, createLocalStore} from "../../../utils/utils";
+import {createStore} from "solid-js/store";
 
 enum LeftBarPage {
   SECTIONS,
@@ -15,13 +16,21 @@ enum LeftBarPage {
 
 const LeftBar: ParentComponent = ({ children }) => {
   const [apiKeys, setApiKeys] = createLocalStore<ApiKeys>("apiKeys", {});
+  // const [apiKeys, setApiKeys] = createStore<ApiKeys>({});
   const [page, setPage] = createSignal(LeftBarPage.SECTIONS);
+
+  const hasApiKey = () => (apiKeys[AI.MISTRAL] && apiKeys[AI.MISTRAL] !== "") ||
+      (apiKeys[AI.BARD] && apiKeys[AI.BARD] !== "") ||
+      (apiKeys[AI.OPEN_AI] && apiKeys[AI.OPEN_AI] !== "");
+
 
   const handleInput = (e: { currentTarget: { value: string; }; }) => {
     const { value } = e.currentTarget;
-    setApiKeys((p) => ({...p, [AI.MISTRAL]: value}));
+    setApiKeys(AI.MISTRAL, value);
   };
 
+  const keyIconButtonColor = () => () => !hasApiKey() ? "red" : "dark-purple"
+  let disabled = () => !hasApiKey()
 
   return (
     <div
@@ -45,12 +54,11 @@ const LeftBar: ParentComponent = ({ children }) => {
 
       <div class="flex flex-row gap-2">
         <Button onClick={() => setPage(p => {
-          const value = p === LeftBarPage.SECTIONS ? LeftBarPage.API_KEYS : LeftBarPage.SECTIONS;
-          return value;
-        })} color="red" width="icon">
+          return p === LeftBarPage.SECTIONS ? LeftBarPage.API_KEYS : LeftBarPage.SECTIONS;
+        })} clr={keyIconButtonColor()} w="icon">
           <ImKey fill="white" />
         </Button>
-        <Button color="dark-purple" width="full">
+        <Button dsb={disabled} clr={() => "dark-purple"} w="full">
           <h2 class="text-3xl">Run</h2>
         </Button>
       </div>
