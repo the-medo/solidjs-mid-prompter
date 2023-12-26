@@ -1,13 +1,13 @@
-import {createEffect, createMemo, createSignal, ParentComponent} from 'solid-js';
+import { createEffect, createMemo, createSignal, ParentComponent } from 'solid-js';
 import styles from './LeftBar.module.css';
 import Button from '../../common/Button/Button';
 import ButtonSection from './Sections/ButtonSection';
-import PromptSection from './Sections/PromptSection';
-import {AI, BSection} from "../../../store/store";
-import {ImKey} from "solid-icons/im";
-import Section from "./Sections/Section";
-import {ApiKeys, createLocalStore} from "../../../utils/utils";
-import {createStore} from "solid-js/store";
+import PromptArea from '../../common/PromptArea/PromptArea';
+import { AI, BSection } from '../../../store/store';
+import { ImKey } from 'solid-icons/im';
+import Section from './Sections/Section';
+import { ApiKeys, createLocalStore } from '../../../utils/utils';
+import { createStore } from 'solid-js/store';
 
 enum LeftBarPage {
   SECTIONS,
@@ -15,22 +15,22 @@ enum LeftBarPage {
 }
 
 const LeftBar: ParentComponent = ({ children }) => {
-  const [apiKeys, setApiKeys] = createLocalStore<ApiKeys>("apiKeys", {});
+  const [apiKeys, setApiKeys] = createLocalStore<ApiKeys>('apiKeys', {});
   // const [apiKeys, setApiKeys] = createStore<ApiKeys>({});
   const [page, setPage] = createSignal(LeftBarPage.SECTIONS);
 
-  const hasApiKey = () => (apiKeys[AI.MISTRAL] && apiKeys[AI.MISTRAL] !== "") ||
-      (apiKeys[AI.BARD] && apiKeys[AI.BARD] !== "") ||
-      (apiKeys[AI.OPEN_AI] && apiKeys[AI.OPEN_AI] !== "");
+  const hasApiKey = () =>
+    (apiKeys[AI.MISTRAL] && apiKeys[AI.MISTRAL] !== '') ||
+    (apiKeys[AI.BARD] && apiKeys[AI.BARD] !== '') ||
+    (apiKeys[AI.OPEN_AI] && apiKeys[AI.OPEN_AI] !== '');
 
-
-  const handleInput = (e: { currentTarget: { value: string; }; }) => {
+  const handleInput = (e: { currentTarget: { value: string } }) => {
     const { value } = e.currentTarget;
     setApiKeys(AI.MISTRAL, value);
   };
 
-  const keyIconButtonColor = () => () => !hasApiKey() ? "red" : "dark-purple"
-  let disabled = () => !hasApiKey()
+  const keyIconButtonColor = () => () => !hasApiKey() ? 'red' : 'dark-purple';
+  let disabled = () => !hasApiKey();
 
   return (
     <div
@@ -38,7 +38,6 @@ const LeftBar: ParentComponent = ({ children }) => {
     >
       {page() === LeftBarPage.SECTIONS && (
         <>
-          <PromptSection />
           <ButtonSection section={BSection.TEMPLATE} />
           <ButtonSection section={BSection.MEDIUM} />
           <ButtonSection section={BSection.RATIO} />
@@ -47,18 +46,28 @@ const LeftBar: ParentComponent = ({ children }) => {
       {page() === LeftBarPage.API_KEYS && (
         <>
           <Section title={'Mistral API Key'}>
-            <input onInput={handleInput} value={apiKeys[AI.MISTRAL]} class="w-full rounded-lg opacity-70 p-2" />
+            <input
+              onInput={handleInput}
+              value={apiKeys[AI.MISTRAL]}
+              class="w-full rounded-lg opacity-70 p-2"
+            />
           </Section>
         </>
       )}
 
       <div class="flex flex-row gap-2">
-        <Button onClick={() => setPage(p => {
-          return p === LeftBarPage.SECTIONS ? LeftBarPage.API_KEYS : LeftBarPage.SECTIONS;
-        })} clr={keyIconButtonColor()} w="icon">
+        <Button
+          onClick={() =>
+            setPage((p) => {
+              return p === LeftBarPage.SECTIONS ? LeftBarPage.API_KEYS : LeftBarPage.SECTIONS;
+            })
+          }
+          clr={keyIconButtonColor()}
+          w="icon"
+        >
           <ImKey fill="white" />
         </Button>
-        <Button dsb={disabled} clr={() => "dark-purple"} w="full">
+        <Button dsb={disabled} clr={() => 'dark-purple'} w="full">
           <h2 class="text-3xl">Run</h2>
         </Button>
       </div>

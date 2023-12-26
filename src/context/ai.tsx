@@ -1,6 +1,6 @@
 import { createContext, createUniqueId, ParentComponent, useContext } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
-import responses from "../screens/Responses";
+import responses from '../components/common/Responses/Responses';
 
 export type AIResponseMessage = {
   id: string;
@@ -10,9 +10,11 @@ export type AIResponseMessage = {
 
 type AIStateContextValues = {
   responses: AIResponseMessage[];
+  prompt: string;
 };
 
 type AIDispatchContextValues = {
+  setPrompt: (s: string) => void;
   addResponse: (s: Omit<AIResponseMessage, 'id'>) => void;
   removeResponse: (id: string) => () => void;
   copyResponse: (id: string) => void;
@@ -22,19 +24,27 @@ const AIStateContext = createContext<AIStateContextValues>();
 const AIDispatchContext = createContext<AIDispatchContextValues>();
 
 const initialState = (): AIStateContextValues => ({
-  responses: [{
-    id: '1',
-    message: 'This is the first generated prompt, not used',
-    copied: false,
-  }, {
-    id: '2',
-    message: 'This is the second generated prompt, used!',
-    copied: true,
-  }, ],
+  responses: [
+    {
+      id: '1',
+      message: 'This is the first generated prompt, not used',
+      copied: false,
+    },
+    {
+      id: '2',
+      message: 'This is the second generated prompt, used!',
+      copied: true,
+    },
+  ],
+  prompt: '',
 });
 
 const AIProvider: ParentComponent = (props) => {
   const [store, setStore] = createStore<AIStateContextValues>(initialState());
+
+  const setPrompt = (s: string) => {
+    setStore('prompt', s);
+  };
 
   const addResponse = (response: Omit<AIResponseMessage, 'id'>) => {
     setStore(
@@ -58,14 +68,14 @@ const AIProvider: ParentComponent = (props) => {
   };
 
   const copyResponse = (id: string) => {
-    const index = store.responses.findIndex((sb) => sb.id === id)
-    console.log("Index found: ", index)
+    const index = store.responses.findIndex((sb) => sb.id === id);
+    console.log('Index found: ', index);
     setStore('responses', index, 'copied', true);
   };
 
   return (
     <AIStateContext.Provider value={store}>
-      <AIDispatchContext.Provider value={{ addResponse, removeResponse, copyResponse }}>
+      <AIDispatchContext.Provider value={{ setPrompt, addResponse, removeResponse, copyResponse }}>
         {props.children}
       </AIDispatchContext.Provider>
     </AIStateContext.Provider>

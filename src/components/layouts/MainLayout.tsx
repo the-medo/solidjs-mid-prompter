@@ -1,6 +1,6 @@
 import { ParentComponent } from 'solid-js';
-import Header from "../sidebars/Header/Header";
-import LeftBar from "../sidebars/LeftBar/LeftBar";
+import Header from '../sidebars/Header/Header';
+import LeftBar from '../sidebars/LeftBar/LeftBar';
 
 const MainLayout: ParentComponent = ({ children }) => {
   return (
@@ -8,7 +8,7 @@ const MainLayout: ParentComponent = ({ children }) => {
       <Header />
       <div class="w-full flex flex-row gap-4 p-4">
         <LeftBar />
-        {children}
+        <div class="flex flex-col w-full text-dark-purple m-4 gap-4">{children}</div>
       </div>
     </div>
   );
