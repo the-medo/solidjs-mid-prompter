@@ -3,7 +3,8 @@ import { render } from 'solid-js/web';
 
 import './index.css';
 import App from './App';
-import AIProvider from "./context/ai";
+import AIProvider from './context/ai';
+import ApiKeysProvider from './context/apiKeys';
 
 const root = document.getElementById('root');
 
@@ -13,4 +14,13 @@ if (import.meta.env.DEV && !(root instanceof HTMLElement)) {
   );
 }
 
-render(() => <AIProvider><App /></AIProvider>, root!);
+render(
+  () => (
+    <AIProvider>
+      <ApiKeysProvider>
+        <App />
+      </ApiKeysProvider>
+    </AIProvider>
+  ),
+  root!,
+);

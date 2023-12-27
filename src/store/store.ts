@@ -1,11 +1,5 @@
 import { createStore } from 'solid-js/store';
-
-
-export enum AI {
-  OPEN_AI,
-  MISTRAL,
-  BARD,
-}
+import { AI } from '../context/ai';
 
 export enum BSection {
   TEMPLATE,
@@ -14,9 +8,9 @@ export enum BSection {
 }
 
 export const sectionTitles: Record<BSection, string> = {
-  [BSection.TEMPLATE]: "Template",
-  [BSection.MEDIUM]: "Medium",
-  [BSection.RATIO]: "Ratio",
+  [BSection.TEMPLATE]: 'Template',
+  [BSection.MEDIUM]: 'Medium',
+  [BSection.RATIO]: 'Ratio',
 };
 
 const optionTitles: Record<BSection, string[]> = {
@@ -32,31 +26,27 @@ const optionTitles: Record<BSection, string[]> = {
     'ratio',
   ],
   [BSection.MEDIUM]: ['digital art', 'concept art', 'watercolor painting'],
-  [BSection.RATIO]: ['1:1', '3:2', '2:3', '16:9', '5:1']
-}
+  [BSection.RATIO]: ['1:1', '3:2', '2:3', '16:9', '5:1'],
+};
 
-export type Options = Record<string, boolean | undefined>
+export type Options = Record<string, boolean | undefined>;
 
-const stringsToOptions = (s: string[]): Options => s.reduce((a, b) => {
-  a[b] = false;
-  return a;
-}, {} as Options);
-
+const stringsToOptions = (s: string[]): Options =>
+  s.reduce((a, b) => {
+    a[b] = false;
+    return a;
+  }, {} as Options);
 
 type AppState = {
-  prompt: string;
   options: Record<BSection, Options>;
-  ai: AI,
 };
 
 const [appState, setAppState] = createStore<AppState>({
-  prompt: '',
   options: {
     [BSection.TEMPLATE]: stringsToOptions(optionTitles[BSection.TEMPLATE]),
     [BSection.MEDIUM]: stringsToOptions(optionTitles[BSection.MEDIUM]),
     [BSection.RATIO]: stringsToOptions(optionTitles[BSection.RATIO]),
   },
-  ai: AI.MISTRAL,
 });
 
 export const useAppState = () => ({ appState, setAppState });

@@ -1,12 +1,18 @@
 import { createContext, createUniqueId, ParentComponent, useContext } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
-import responses from '../components/common/Responses/Responses';
+import { ApiKeys, createLocalStore } from '../utils/utils';
 
 export type AIResponseMessage = {
   id: string;
   message: string;
   copied: boolean;
 };
+
+export enum AI {
+  OPEN_AI,
+  MISTRAL,
+  BARD,
+}
 
 type AIStateContextValues = {
   responses: AIResponseMessage[];

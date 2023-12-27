@@ -1,13 +1,12 @@
-import { createEffect, createMemo, createSignal, ParentComponent } from 'solid-js';
+import { createSignal, ParentComponent } from 'solid-js';
 import styles from './LeftBar.module.css';
 import Button from '../../common/Button/Button';
 import ButtonSection from './Sections/ButtonSection';
-import PromptArea from '../../common/PromptArea/PromptArea';
-import { AI, BSection } from '../../../store/store';
+import { BSection } from '../../../store/store';
 import { ImKey } from 'solid-icons/im';
 import Section from './Sections/Section';
-import { ApiKeys, createLocalStore } from '../../../utils/utils';
-import { createStore } from 'solid-js/store';
+import { AI } from '../../../context/ai';
+import { useApiKeysDispatch, useApiKeysState } from '../../../context/apiKeys';
 
 enum LeftBarPage {
   SECTIONS,
@@ -15,22 +14,16 @@ enum LeftBarPage {
 }
 
 const LeftBar: ParentComponent = ({ children }) => {
-  const [apiKeys, setApiKeys] = createLocalStore<ApiKeys>('apiKeys', {});
-  // const [apiKeys, setApiKeys] = createStore<ApiKeys>({});
+  const store = useApiKeysState();
+  const { setApiKey } = useApiKeysDispatch();
   const [page, setPage] = createSignal(LeftBarPage.SECTIONS);
-
-  const hasApiKey = () =>
-    (apiKeys[AI.MISTRAL] && apiKeys[AI.MISTRAL] !== '') ||
-    (apiKeys[AI.BARD] && apiKeys[AI.BARD] !== '') ||
-    (apiKeys[AI.OPEN_AI] && apiKeys[AI.OPEN_AI] !== '');
 
   const handleInput = (e: { currentTarget: { value: string } }) => {
     const { value } = e.currentTarget;
-    setApiKeys(AI.MISTRAL, value);
+    setApiKey(AI.MISTRAL, value);
   };
 
-  const keyIconButtonColor = () => () => !hasApiKey() ? 'red' : 'dark-purple';
-  let disabled = () => !hasApiKey();
+  const keyIconButtonColor = () => () => !store.activeApiKey ? 'red' : 'dark-purple';
 
   return (
     <div
@@ -48,7 +41,7 @@ const LeftBar: ParentComponent = ({ children }) => {
           <Section title={'Mistral API Key'}>
             <input
               onInput={handleInput}
-              value={apiKeys[AI.MISTRAL]}
+              value={store.apiKeys[AI.MISTRAL]}
               class="w-full rounded-lg opacity-70 p-2"
             />
           </Section>
@@ -63,12 +56,11 @@ const LeftBar: ParentComponent = ({ children }) => {
             })
           }
           clr={keyIconButtonColor()}
-          w="icon"
+          w="full"
         >
-          <ImKey fill="white" />
-        </Button>
-        <Button dsb={disabled} clr={() => 'dark-purple'} w="full">
-          <h2 class="text-3xl">Run</h2>
+          <span>
+            <ImKey fill="white" />
+          </span>
         </Button>
       </div>
     </div>
