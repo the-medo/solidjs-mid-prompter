@@ -30,7 +30,7 @@ const initialState = (): ApiKeysStateContextValues => ({
   },
   activeApiKey: '',
   ai: AI.MISTRAL,
-  generating: true,
+  generating: false,
 });
 
 const ApiKeysProvider: ParentComponent = (props) => {
@@ -57,6 +57,8 @@ const ApiKeysProvider: ParentComponent = (props) => {
   };
 
   const generatePrompts = async (userPrompt: string) => {
+    setGenerating(true);
+
     const config = {
       method: 'post',
       url: 'https://api.mistral.ai/v1/chat/completions',
@@ -76,23 +78,13 @@ const ApiKeysProvider: ParentComponent = (props) => {
       },
     };
 
-    setResponses([
-      'Test',
-      'Another prompt',
-      'Whoaaaaaaa',
-      'Okay, another one',
-      'Uff, what is this!',
-    ]);
-
-    setGenerating(false);
-
-    return;
     axios<ChatCompletionResponse>(config)
       .then((chatResponse) => {
         console.log('Full response:', chatResponse.data);
         console.log('Chat:', chatResponse.data.choices[0].message.content);
-        console.log('Responses:', chatResponse.data.choices[0].message.content.split(';'));
-        setResponses(chatResponse.data.choices[0].message.content.split(';'));
+        console.log('Responses:', chatResponse.data.choices[0].message.content.split('\n'));
+        setResponses(chatResponse.data.choices[0].message.content.split('\n'));
+        setGenerating(false);
       })
       .catch(function (error) {
         console.error(error);

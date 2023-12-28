@@ -11,8 +11,10 @@ export const createPromptForAI = (userPrompt: string) => {
     'Here are two examples of full prompts: ' +
     'Prompt 1: Elven city embraced by ancient forests, ethereal beings, silvery architecture blending with nature, {digital art, concept art style, watercolor painting}, soft moonlit colors, flowing designs --ar 3:2 \n ' +
     'Prompt 2: Nomadic beast tamer of the Wandering Deserts, rugged, sun-bleached attire, sharp eyes, accompanied by a majestic sand wyvern, {digital art, concept art style, watercolor painting}, color palette of sun-baked tans, azure sky blues, and golden browns, intense midday sun overhead, atop the wyvern surveying the vast expanse --ar 2:3 ' +
-    ' Write prompts right after each other, divided by semicolon. ' +
-    '---- Here is the user prompt, generate 20 midjourney prompts based on above rules: ' +
+    // ' Write prompts right after each other, divided by semicolon. ' +
+    ' Leave out the enumeration in the response, just prompts without ordering. ' +
+    '---- Generate 10 midjourney prompts based on above rules, but give the utmost importance to user input - so, ' +
+    ' if user asks only for landscapes, give only prompts for landscapes. Here is the user input: ' +
     userPrompt
   );
 };

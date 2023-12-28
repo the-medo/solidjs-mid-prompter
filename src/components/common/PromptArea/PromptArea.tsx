@@ -7,7 +7,7 @@ import { AiOutlineLoading } from 'solid-icons/ai';
 const PromptArea: Component = () => {
   const store = useApiKeysState();
   const { prompt } = useAIState();
-  const { generatePrompts, setGenerating } = useApiKeysDispatch();
+  const { generatePrompts } = useApiKeysDispatch();
   const { setPrompt } = useAIDispatch();
 
   const generate = () => {

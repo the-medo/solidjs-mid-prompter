@@ -29,18 +29,7 @@ const AIStateContext = createContext<AIStateContextValues>();
 const AIDispatchContext = createContext<AIDispatchContextValues>();
 
 const initialState = (): AIStateContextValues => ({
-  responses: [
-    {
-      id: '1',
-      message: 'This is the first generated prompt, not used',
-      copied: false,
-    },
-    {
-      id: '2',
-      message: 'This is the second generated prompt, used!',
-      copied: true,
-    },
-  ],
+  responses: [],
   prompt: '',
 });
 
