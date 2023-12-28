@@ -1,9 +1,9 @@
 import { createEffect } from 'solid-js';
 import { createStore, SetStoreFunction, Store } from 'solid-js/store';
 
-import { AI } from '../context/ai';
+import { Store } from '../context/store';
 
-export type ApiKeys = Record<AI, string>;
+export type ApiKeys = Record<Store, string>;
 
 export function createLocalStore<T extends object>(
   name: string,

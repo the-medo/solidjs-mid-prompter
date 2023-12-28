@@ -2,11 +2,11 @@ import { createSignal, ParentComponent } from 'solid-js';
 import styles from './LeftBar.module.css';
 import Button from '../../common/Button/Button';
 import ButtonSection from './Sections/ButtonSection';
-import { BSection } from '../../../store/store';
 import { ImKey } from 'solid-icons/im';
 import Section from './Sections/Section';
-import { AI } from '../../../context/ai';
-import { useApiKeysDispatch, useApiKeysState } from '../../../context/apiKeys';
+import { Store } from '../../../context/store';
+import { useLocalStoreDispatch, useLocalStoreState } from '../../../context/localStore';
+import { SectionType } from '../../../utils/sections';
 
 enum LeftBarPage {
   SECTIONS,
@@ -14,13 +14,13 @@ enum LeftBarPage {
 }
 
 const LeftBar: ParentComponent = ({ children }) => {
-  const store = useApiKeysState();
-  const { setApiKey } = useApiKeysDispatch();
+  const store = useLocalStoreState();
+  const { setApiKey } = useLocalStoreDispatch();
   const [page, setPage] = createSignal(LeftBarPage.SECTIONS);
 
   const handleInput = (e: { currentTarget: { value: string } }) => {
     const { value } = e.currentTarget;
-    setApiKey(AI.MISTRAL, value);
+    setApiKey(Store.MISTRAL, value);
   };
 
   const keyIconButtonColor = () => () => !store.activeApiKey ? 'red' : 'dark-purple';
@@ -31,9 +31,9 @@ const LeftBar: ParentComponent = ({ children }) => {
     >
       {page() === LeftBarPage.SECTIONS && (
         <>
-          <ButtonSection section={BSection.TEMPLATE} />
-          <ButtonSection section={BSection.MEDIUM} />
-          <ButtonSection section={BSection.RATIO} />
+          <ButtonSection section={SectionType.TEMPLATE} />
+          <ButtonSection section={SectionType.MEDIUM} />
+          <ButtonSection section={SectionType.RATIO} />
         </>
       )}
       {page() === LeftBarPage.API_KEYS && (
@@ -41,7 +41,7 @@ const LeftBar: ParentComponent = ({ children }) => {
           <Section title={'Mistral API Key'}>
             <input
               onInput={handleInput}
-              value={store.apiKeys[AI.MISTRAL]}
+              value={store.apiKeys[Store.MISTRAL]}
               class="w-full rounded-lg opacity-70 p-2"
             />
           </Section>

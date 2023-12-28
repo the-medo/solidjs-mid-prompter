@@ -1,18 +1,18 @@
 import { Component, Show } from 'solid-js';
-import { AI, useAIDispatch, useAIState } from '../../../context/ai';
+import { Store, useStoreDispatch, useStoreState } from '../../../context/store';
 import Button from '../Button/Button';
-import { useApiKeysDispatch, useApiKeysState } from '../../../context/apiKeys';
+import { useLocalStoreDispatch, useLocalStoreState } from '../../../context/localStore';
 import { AiOutlineLoading } from 'solid-icons/ai';
 
 const PromptArea: Component = () => {
-  const store = useApiKeysState();
-  const { prompt } = useAIState();
-  const { generatePrompts } = useApiKeysDispatch();
-  const { setPrompt } = useAIDispatch();
+  const localStore = useLocalStoreState();
+  const store = useStoreState();
+  const { generatePrompts } = useLocalStoreDispatch();
+  const { setPrompt } = useStoreDispatch();
 
   const generate = () => {
     console.log('Generating... ', prompt);
-    generatePrompts(prompt);
+    generatePrompts(store.prompt);
   };
 
   return (
@@ -24,14 +24,14 @@ const PromptArea: Component = () => {
         <div class="flex flex-row gap-4">
           <textarea
             onInput={(e) => setPrompt(e.target.value)}
-            value={prompt}
+            value={store.prompt}
             class="w-full rounded-lg opacity-60"
           />
 
           <div class="w-80">
             <Button
               onClick={generate}
-              dsb={() => !store.activeApiKey || store.generating}
+              dsb={() => !localStore.activeApiKey || store.generating}
               clr={() => 'dark-purple'}
               w="full"
             >

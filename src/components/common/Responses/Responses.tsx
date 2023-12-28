@@ -1,10 +1,10 @@
 import { Component, For } from 'solid-js';
-import { useAIDispatch, useAIState } from '../../../context/ai';
+import { useStoreDispatch, useStoreState } from '../../../context/store';
 import Response from '../Response/Response';
 
 const Responses: Component = () => {
-  const { responses } = useAIState();
-  const { copyResponse } = useAIDispatch();
+  const { responses } = useStoreState();
+  const { copyResponse } = useStoreDispatch();
 
   const onCopy = (id: string) => () => {
     copyResponse(id);

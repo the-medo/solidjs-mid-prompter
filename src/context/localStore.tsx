@@ -1,46 +1,43 @@
 import { createContext, createEffect, ParentComponent, useContext } from 'solid-js';
 import { ApiKeys, createLocalStore } from '../utils/utils';
-import { AI, useAIDispatch } from './ai';
+import { Store, useStoreDispatch } from './store';
 import { createPromptForAI } from '../utils/aiUtils';
 import axios from 'axios';
 import { ChatCompletionResponse } from '../../mistralai';
 
-type ApiKeysStateContextValues = {
+type LocalStoreStateContextValues = {
   apiKeys: ApiKeys;
   activeApiKey: string;
-  ai: AI;
-  generating: boolean;
+  ai: Store;
 };
 
-type ApiKeysDispatchContextValues = {
-  setApiKey: (ai: AI, s: string) => void;
-  setAI: (ai: AI) => void;
-  setGenerating: (a: boolean) => void;
+type LocalStoreDispatchContextValues = {
+  setApiKey: (ai: Store, s: string) => void;
+  setAI: (ai: Store) => void;
   generatePrompts: (userPrompt: string) => void;
 };
 
-const ApiKeysStateContext = createContext<ApiKeysStateContextValues>();
-const ApiKeysDispatchContext = createContext<ApiKeysDispatchContextValues>();
+const LocalStoreStateContext = createContext<LocalStoreStateContextValues>();
+const LocalStoreDispatchContext = createContext<LocalStoreDispatchContextValues>();
 
-const initialState = (): ApiKeysStateContextValues => ({
+const initialState = (): LocalStoreStateContextValues => ({
   apiKeys: {
-    [AI.BARD]: '',
-    [AI.MISTRAL]: '',
-    [AI.OPEN_AI]: '',
+    [Store.BARD]: '',
+    [Store.MISTRAL]: '',
+    [Store.OPEN_AI]: '',
   },
   activeApiKey: '',
-  ai: AI.MISTRAL,
-  generating: false,
+  ai: Store.MISTRAL,
 });
 
-const ApiKeysProvider: ParentComponent = (props) => {
-  const { setResponses } = useAIDispatch();
-  const [store, setStore] = createLocalStore<ApiKeysStateContextValues>(
+const LocalStoreProvider: ParentComponent = (props) => {
+  const { setResponses, setGenerating } = useStoreDispatch();
+  const [store, setStore] = createLocalStore<LocalStoreStateContextValues>(
     'apiKeysStore',
     initialState(),
   );
 
-  const setApiKey = (ai: AI, s: string) => {
+  const setApiKey = (ai: Store, s: string) => {
     setStore('apiKeys', ai, s);
   };
 
@@ -48,12 +45,8 @@ const ApiKeysProvider: ParentComponent = (props) => {
     setStore('activeApiKey', store.apiKeys[store.ai]);
   });
 
-  const setAI = (ai: AI) => {
+  const setAI = (ai: Store) => {
     setStore('ai', ai);
-  };
-
-  const setGenerating = (generating: boolean) => {
-    setStore('generating', generating);
   };
 
   const generatePrompts = async (userPrompt: string) => {
@@ -92,15 +85,15 @@ const ApiKeysProvider: ParentComponent = (props) => {
   };
 
   return (
-    <ApiKeysStateContext.Provider value={store}>
-      <ApiKeysDispatchContext.Provider value={{ setApiKey, setAI, generatePrompts, setGenerating }}>
+    <LocalStoreStateContext.Provider value={store}>
+      <LocalStoreDispatchContext.Provider value={{ setApiKey, setAI, generatePrompts }}>
         {props.children}
-      </ApiKeysDispatchContext.Provider>
-    </ApiKeysStateContext.Provider>
+      </LocalStoreDispatchContext.Provider>
+    </LocalStoreStateContext.Provider>
   );
 };
 
-export const useApiKeysState = () => useContext(ApiKeysStateContext)!;
-export const useApiKeysDispatch = () => useContext(ApiKeysDispatchContext)!;
+export const useLocalStoreState = () => useContext(LocalStoreStateContext)!;
+export const useLocalStoreDispatch = () => useContext(LocalStoreDispatchContext)!;
 
-export default ApiKeysProvider;
+export default LocalStoreProvider;

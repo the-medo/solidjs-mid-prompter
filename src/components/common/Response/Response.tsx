@@ -1,5 +1,5 @@
 import { Component } from 'solid-js';
-import { AIResponseMessage, useAIDispatch } from '../../../context/ai';
+import { AIResponseMessage, useStoreDispatch } from '../../../context/store';
 import { BiRegularCopy } from 'solid-icons/bi';
 
 interface Props extends AIResponseMessage {

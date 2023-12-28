@@ -1,40 +1,23 @@
 import { Component, For, JSX } from 'solid-js';
 import Section from './Section';
 import TagButton from '../../../common/TagButton/TagButton';
-import {BSection, sectionTitles, useAppState} from '../../../../store/store';
-
-//
-// const tagButtons = [
-//   '(art medium)',
-//   '(artistic style)',
-//   "(image we're prompting)",
-//   '(5 descriptive keywords)',
-//   '(color palette)',
-//   '(lighting conditions)',
-//   '(perspective/viewpoint)',
-//   '(camera type)',
-//   '(camera lens type)',
-//   '(time of day)',
-//   '(style of photograph)',
-//   '(type of film)',
-// ];
+import { SectionType, sectionTitles } from '../../../../utils/sections';
+import { useStoreDispatch, useStoreState } from '../../../../context/store';
 
 interface ButtonSectionProps {
-  section: BSection;
+  section: SectionType;
 }
 
 const ButtonSection: Component<ButtonSectionProps> = (props) => {
-
-  const { appState, setAppState } = useAppState();
+  const store = useStoreState();
+  const dispatch = useStoreDispatch();
 
   return (
     <Section title={sectionTitles[props.section]}>
-      <For each={Object.keys(appState.options[props.section])}>
+      <For each={Object.keys(store.options[props.section])}>
         {(optionTitle) => (
           <TagButton
-            onClick={() => {
-              setAppState('options', props.section, optionTitle, (prev) => !prev);
-            }}
+            onClick={() => dispatch.setOption(props.section, optionTitle)}
             section={props.section}
             option={optionTitle}
           >
