@@ -26,7 +26,7 @@
     "vite-plugin-solid": "^2.7.0"
   },
   "dependencies": {
-    "@mistralai/mistralai": "^0.0.8",
+    "axios": "^1.6.3",
     "solid-icons": "^1.0.7",
     "solid-js": "^1.7.6"
   }

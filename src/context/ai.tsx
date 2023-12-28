@@ -1,6 +1,5 @@
 import { createContext, createUniqueId, ParentComponent, useContext } from 'solid-js';
 import { createStore, produce } from 'solid-js/store';
-import { ApiKeys, createLocalStore } from '../utils/utils';
 
 export type AIResponseMessage = {
   id: string;
@@ -21,7 +20,7 @@ type AIStateContextValues = {
 
 type AIDispatchContextValues = {
   setPrompt: (s: string) => void;
-  addResponse: (s: Omit<AIResponseMessage, 'id'>) => void;
+  setResponses: (responses: string[]) => void;
   removeResponse: (id: string) => () => void;
   copyResponse: (id: string) => void;
 };
@@ -52,11 +51,18 @@ const AIProvider: ParentComponent = (props) => {
     setStore('prompt', s);
   };
 
-  const addResponse = (response: Omit<AIResponseMessage, 'id'>) => {
+  const setResponses = (responses: string[]) => {
     setStore(
       'responses',
       produce((r) => {
-        r.push({ ...response, id: createUniqueId() });
+        r.splice(0, r.length);
+        responses.forEach((res) =>
+          r.push({
+            id: createUniqueId(),
+            copied: false,
+            message: res,
+          }),
+        );
       }),
     );
   };
@@ -81,7 +87,7 @@ const AIProvider: ParentComponent = (props) => {
 
   return (
     <AIStateContext.Provider value={store}>
-      <AIDispatchContext.Provider value={{ setPrompt, addResponse, removeResponse, copyResponse }}>
+      <AIDispatchContext.Provider value={{ setPrompt, setResponses, removeResponse, copyResponse }}>
         {props.children}
       </AIDispatchContext.Provider>
     </AIStateContext.Provider>

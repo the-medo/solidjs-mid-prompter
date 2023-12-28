@@ -17,7 +17,7 @@ const Button: ParentComponent<ButtonProps> = ({ children, ...initialProps }) => 
 
   return (
     <button
-      class={`flex flex-row items-center justify-center text-white text-right p-2 px-4 rounded-md opacity-100 disabled:opacity-50 disabled:cursor-not-allowed`}
+      class={`flex flex-row gap-4 items-center justify-center text-white text-right p-2 px-4 rounded-md opacity-100 disabled:opacity-50 disabled:cursor-not-allowed`}
       classList={{
         'bg-red-600': props.clr() === 'red',
         'bg-dark-purple': props.clr() === 'dark-purple',
