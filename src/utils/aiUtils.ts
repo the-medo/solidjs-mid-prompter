@@ -13,7 +13,7 @@ export const createPromptForAI = (userPrompt: string) => {
     'Prompt 2: Nomadic beast tamer of the Wandering Deserts, rugged, sun-bleached attire, sharp eyes, accompanied by a majestic sand wyvern, {digital art, concept art style, watercolor painting}, color palette of sun-baked tans, azure sky blues, and golden browns, intense midday sun overhead, atop the wyvern surveying the vast expanse --ar 2:3 ' +
     // ' Write prompts right after each other, divided by semicolon. ' +
     ' Leave out the enumeration in the response, just prompts without ordering. ' +
-    '---- Generate 10 midjourney prompts based on above rules, but give the utmost importance to user input - so, ' +
+    '---- Generate 5 midjourney prompts based on above rules, but give the utmost importance to user input - so, ' +
     ' if user asks only for landscapes, give only prompts for landscapes. Here is the user input: ' +
     userPrompt
   );

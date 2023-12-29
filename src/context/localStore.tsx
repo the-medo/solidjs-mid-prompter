@@ -2,8 +2,7 @@ import { createContext, createEffect, ParentComponent, useContext } from 'solid-
 import { ApiKeys, createLocalStore } from '../utils/utils';
 import { Store, useStoreDispatch } from './store';
 import { createPromptForAI } from '../utils/aiUtils';
-import axios from 'axios';
-import { ChatCompletionResponse } from '../../mistralai';
+import { MistralClient } from '@external/mistralai';
 
 type LocalStoreStateContextValues = {
   apiKeys: ApiKeys;
@@ -31,7 +30,7 @@ const initialState = (): LocalStoreStateContextValues => ({
 });
 
 const LocalStoreProvider: ParentComponent = (props) => {
-  const { setResponses, setGenerating } = useStoreDispatch();
+  const { addResponse, setGenerating } = useStoreDispatch();
   const [store, setStore] = createLocalStore<LocalStoreStateContextValues>(
     'apiKeysStore',
     initialState(),
@@ -52,36 +51,44 @@ const LocalStoreProvider: ParentComponent = (props) => {
   const generatePrompts = async (userPrompt: string) => {
     setGenerating(true);
 
-    const config = {
-      method: 'post',
-      url: 'https://api.mistral.ai/v1/chat/completions',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-        Authorization: `Bearer ${store.activeApiKey}`,
-      },
-      data: {
-        model: 'mistral-medium',
-        messages: [
-          {
-            role: 'user',
-            content: createPromptForAI(userPrompt),
-          },
-        ],
-      },
-    };
+    const client = new MistralClient(store.activeApiKey);
 
-    axios<ChatCompletionResponse>(config)
-      .then((chatResponse) => {
-        console.log('Full response:', chatResponse.data);
-        console.log('Chat:', chatResponse.data.choices[0].message.content);
-        console.log('Responses:', chatResponse.data.choices[0].message.content.split('\n'));
-        setResponses(chatResponse.data.choices[0].message.content.split('\n'));
-        setGenerating(false);
-      })
-      .catch(function (error) {
-        console.error(error);
+    try {
+      const chatStreamResponse = await client.chatStream({
+        model: 'mistral-tiny',
+        messages: [{ role: 'user', content: createPromptForAI(userPrompt) }],
       });
+      let textToProcess = '';
+
+      for await (const chunk of chatStreamResponse) {
+        console.log('CHUNK: ', chunk);
+        if (chunk.choices[0].delta.content !== undefined) {
+          let streamText = chunk.choices[0].delta.content;
+          console.log('STREAM TEXT: ', streamText);
+
+          textToProcess += streamText;
+          const split = textToProcess.split('\n');
+          if (split.length > 1) {
+            split.forEach((r, i) => {
+              if (i < split.length - 1) {
+                if (r !== '') {
+                  console.log('NEW RESPONSE: ', r);
+                  addResponse(r);
+                }
+              } else {
+                textToProcess = r;
+              }
+            });
+          }
+        }
+      }
+
+      if (textToProcess.length > 0) {
+        addResponse(textToProcess);
+      }
+    } catch (e) {
+      console.error(e);
+    }
   };
 
   return (

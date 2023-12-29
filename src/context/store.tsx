@@ -23,6 +23,7 @@ type StoreStateContextValues = {
 
 type StoreDispatchContextValues = {
   setPrompt: (s: string) => void;
+  addResponse: (response: string) => void;
   setResponses: (responses: string[]) => void;
   setGenerating: (a: boolean) => void;
   setOption: (section: SectionType, optionTitle: string) => void;
@@ -49,6 +50,19 @@ const StoreProvider: ParentComponent = (props) => {
 
   const setPrompt = (s: string) => {
     setStore('prompt', s);
+  };
+
+  const addResponse = (response: string) => {
+    setStore(
+      'responses',
+      produce((r) => {
+        r.push({
+          id: createUniqueId(),
+          copied: false,
+          message: response,
+        });
+      }),
+    );
   };
 
   const setResponses = (responses: string[]) => {
@@ -96,7 +110,15 @@ const StoreProvider: ParentComponent = (props) => {
   return (
     <StoreStateContext.Provider value={store}>
       <StoreDispatchContext.Provider
-        value={{ setPrompt, setResponses, setGenerating, setOption, removeResponse, copyResponse }}
+        value={{
+          setPrompt,
+          addResponse,
+          setResponses,
+          setGenerating,
+          setOption,
+          removeResponse,
+          copyResponse,
+        }}
       >
         {props.children}
       </StoreDispatchContext.Provider>
