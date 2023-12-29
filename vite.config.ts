@@ -17,4 +17,9 @@ export default defineConfig({
   build: {
     target: 'esnext',
   },
+  resolve: {
+    alias: {
+      '@external/mistralai': './src/external/mistralai/index.js',
+    },
+  },
 });
